@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.app.song.hxchat.db.DBUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 
@@ -28,6 +29,11 @@ public class HXApplication extends Application{
         super.onCreate();
         initHX();//初始化环信
         initBom();//集成BOM后端云
+        initDB();
+    }
+
+    private void initDB() {
+        DBUtils.initDB(this);
     }
 
     private void initBom() {

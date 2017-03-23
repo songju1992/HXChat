@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context="com.app.song.hxchat.fragment.ContactFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.app.song.hxchat.widget.ContactLayout
+        android:id="@+id/contactLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="消息" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

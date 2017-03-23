@@ -16,6 +16,7 @@ import com.app.song.hxchat.view.LoginActivity;
 
 /**
  * A simple {@link Fragment} subclass.
+ * 动态fragment
  */
 public class PluginFragment extends BaseFragment implements PluginView{
 
