@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.app.song.hxchat.utils.FragmentFactory;
 import com.app.song.hxchat.utils.ToastUtils;
+import com.app.song.hxchat.view.AddFriendActivity;
 import com.app.song.hxchat.view.LoginActivity;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
@@ -133,7 +134,7 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add_friend:
-//                startActivity(AddFriendActivity.class,false);
+                startActivity(AddFriendActivity.class,false);
                 break;
             case R.id.menu_scan:
                 ToastUtils.showToast(this,"分享好友");

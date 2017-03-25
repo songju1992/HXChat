@@ -2,13 +2,17 @@ package com.app.song.hxchat;
 
 import android.app.ActivityManager;
 import android.app.Application;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.app.song.hxchat.db.DBUtils;
+import com.app.song.hxchat.event.OnContactUpdateEvent;
+import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
+import com.hyphenate.exceptions.HyphenateException;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +48,7 @@ public class HXApplication extends Application{
         EMOptions options = new EMOptions();
         // 默认添加好友时，是不需要验证的，改成需要验证
         options.setAcceptInvitationAlways(false);
-        options.setAutoLogin(false);
+        options.setAutoLogin(true);
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);
         // 如果APP启用了远程的service，此application:onCreate会被调用2次
@@ -62,6 +66,50 @@ public class HXApplication extends Application{
         EMClient.getInstance().init(this, options);
         //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(true);
+        //添加通讯录监听
+        initContactListener();
+    }
+
+    private void initContactListener() {
+        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+            @Override
+            public void onContactAdded(String s) {
+                //好友请求被同意
+                //发出通知让ContactFragment更新UI
+                EventBus.getDefault().post(new OnContactUpdateEvent(s,true));
+            }
+
+            @Override
+            public void onContactDeleted(String s) {
+                //好友被删除的回调
+                EventBus.getDefault().post(new OnContactUpdateEvent(s, false));
+                Log.d(TAG, "onContactDeleted: " + s);
+            }
+
+            @Override
+            public void onContactInvited(String username, String reason) {
+                //收到好友的邀请
+                Log.d(TAG, "onContactInvited: " + username + "/" + reason);
+                //同意或者拒绝
+                try {
+                    EMClient.getInstance().contactManager().acceptInvitation(username);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFriendRequestAccepted(String s) {
+                //添加了联系人回调
+                EventBus.getDefault().post(new OnContactUpdateEvent(s,true));
+
+            }
+
+            @Override
+            public void onFriendRequestDeclined(String s) {
+                //好友请求被拒绝的回调
+            }
+        });
     }
 
     private String getAppName(int pID) {
