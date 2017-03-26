@@ -11,6 +11,5 @@ import java.util.List;
 
 public interface ChatView {
     void onInit(List<EMMessage> emMessageList);
-
     void onUpdate(int size);
 }

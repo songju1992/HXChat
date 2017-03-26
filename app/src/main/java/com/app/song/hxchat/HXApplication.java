@@ -8,7 +8,9 @@ import android.util.Log;
 import com.app.song.hxchat.db.DBUtils;
 import com.app.song.hxchat.event.OnContactUpdateEvent;
 import com.hyphenate.EMContactListener;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.exceptions.HyphenateException;
 
@@ -68,7 +70,43 @@ public class HXApplication extends Application{
         EMClient.getInstance().setDebugMode(true);
         //添加通讯录监听
         initContactListener();
+        //添加消息监听
+        initMessageListener();
     }
+
+    private void initMessageListener() {
+        EMClient.getInstance().chatManager().addMessageListener(new EMMessageListener() {
+            @Override
+            public void onMessageReceived(List<EMMessage> list) {
+                //收到消息
+                if(list!=null&&list.size()>0){
+                    Log.d(TAG,"messgae"+list.get(0).getBody());
+                    EventBus.getDefault().post(list.get(0));
+                }
+            }
+
+            @Override
+            public void onCmdMessageReceived(List<EMMessage> list) {
+
+            }
+
+            @Override
+            public void onMessageRead(List<EMMessage> list) {
+                //收到已读回执
+            }
+
+            @Override
+            public void onMessageDelivered(List<EMMessage> list) {
+                //收到已送达回执
+            }
+
+            @Override
+            public void onMessageChanged(EMMessage emMessage, Object o) {
+
+            }
+        });
+    }
+
 
     private void initContactListener() {
         EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
